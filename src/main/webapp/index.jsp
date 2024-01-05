@@ -1,5 +1,11 @@
 <html>
+<head>
+    <meta charset="UTF-8">
+    <title>Library App</title>
+</head>
 <body>
-<h2>Library App</h2>
+    <a href="people">List of people in Library</a>
+    <br/>
+    <a HREF="books">List of Books in Library</a>
 </body>
 </html>
