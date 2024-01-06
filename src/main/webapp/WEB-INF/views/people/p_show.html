@@ -7,12 +7,24 @@
 <body>
 <p th:text="${person.getFirstName()+' '+person.getLastName()+', '+person.getYearOfBirth()}">full name</p>
 
-<hr/>
-<p> add text about book </p>
-<hr/>
+<div th:if="${books.isEmpty()}">
+    <p>The person hasn't picked up a single book yet</p>
+    <hr/>
+</div>
+
+<div th:if="${!books.isEmpty()}">
+    <hr/>
+    <b>Books:</b>
+    <br/>
+    <table th:each="book : ${books}">
+        <tr th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYear()}">book</tr>
+    </table>
+    <hr/>
+</div>
+
 
 <div>
-    <form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getId()})}" style="display: inline;">
+    <form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getId()})}" th:object="${person}" style="display: inline;">
         <input type="submit" value="Edit"/>
     </form>
     <form th:method="DELETE" th:action="@{/people/{id}(id=${person.getId()})}" th:object="${person}" style="display: inline;">

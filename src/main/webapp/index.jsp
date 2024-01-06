@@ -6,6 +6,6 @@
 <body>
     <a href="people">List of people in Library</a>
     <br/>
-    <a HREF="books">List of Books in Library</a>
+    <a HREF="books">List of books in Library</a>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package dev.alexcoss.dao;
 
+import dev.alexcoss.models.Book;
 import dev.alexcoss.models.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -17,6 +18,7 @@ public class PersonDAO extends AbstractDao<Person> {
     private static final String SELECT_BY_ID_SQL = "SELECT * FROM person WHERE id = ?";
     private static final String UPDATE_SQL = "UPDATE person SET first_name = ?, last_name = ?, year_of_birth = ? WHERE id = ?";
     private static final String DELETE_SQL = "DELETE FROM person WHERE id = ?";
+    private static final String SELECT_ALL_BOOKS_BY_ID_SQL = "SELECT * FROM book WHERE person_id = ?";
 
 
     @Autowired
@@ -50,5 +52,9 @@ public class PersonDAO extends AbstractDao<Person> {
     @Override
     public void deleteItem(int id) {
         jdbcTemplate.update(DELETE_SQL, id);
+    }
+
+    public List<Book> getBooksByPersonId(int id) {
+        return jdbcTemplate.query(SELECT_ALL_BOOKS_BY_ID_SQL, new BeanPropertyRowMapper<>(Book.class), id);
     }
 }

@@ -22,24 +22,26 @@ public class PeopleController {
     @GetMapping()
     public String index(Model model) {
         model.addAttribute("people", personDAO.index());
-        return "people/index";
+        return "people/p_index";
     }
 
     @GetMapping("/{id}")
-    public String showPerson(@PathVariable("id") int id, Model model) {;
+    public String showPerson(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", personDAO.getItem(id));
-        return "people/show";
+        model.addAttribute("books", personDAO.getBooksByPersonId(id));
+
+        return "people/p_show";
     }
 
     @GetMapping("/new")
     public String newPerson(@ModelAttribute("person") Person person) {
-        return "people/new";
+        return "people/p_new";
     }
 
     @PostMapping()
     public String createPerson(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult) {
         if (bindingResult.hasErrors())
-            return "people/new";
+            return "people/p_new";
 
         personDAO.addItem(person);
         return "redirect:/people";
@@ -48,14 +50,14 @@ public class PeopleController {
     @GetMapping("/{id}/edit")
     public String editPerson(Model model, @PathVariable("id") int id) {
         model.addAttribute("person", personDAO.getItem(id));
-        return "people/edit";
+        return "people/p_edit";
 
     }
 
     @PatchMapping("/{id}")
     public String updatePerson(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors())
-            return "people/edit";
+            return "people/p_edit";
 
         personDAO.updateItem(id, person);
         return "redirect:/people";

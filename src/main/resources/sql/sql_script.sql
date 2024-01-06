@@ -76,3 +76,6 @@ FROM person;
 
 SELECT *
 FROM book;
+
+SELECT p.* FROM book as b JOIN person as p ON b.person_id = p.id;
+SELECT p.* FROM book as b JOIN person as p ON b.person_id = p.id WHERE b.id = 1;
