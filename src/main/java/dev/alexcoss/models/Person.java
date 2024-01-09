@@ -1,31 +1,46 @@
 package dev.alexcoss.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "person")
 public class Person {
     private static final int MIN = 2;
     private static final int MAX = 30;
-    private static final int MIN_YEAR = 1920;
 
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotEmpty(message = "First name should not be empty")
     @Size(min = MIN, max = MAX, message = "First name should be between 2 and 30 characters")
+    @Column(name = "first_name")
     private String firstName;
     @NotEmpty(message = "Last name should not be empty")
     @Size(min = MIN, max = MAX, message = "Last name should be between 2 and 30 characters")
+    @Column(name = "last_name")
     private String lastName;
-    @Min(value = MIN_YEAR, message = "Year of Birth should be after 1920")
-    private int yearOfBirth;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
+
+    @OneToMany(mappedBy = "reader", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    private List<Book> books;
 
     public Person() {}
 
-    public Person(int id, String firstName, String lastName, int yearOfBirth) {
-        this.id = id;
+    public Person(String firstName, String lastName, Date dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.yearOfBirth = yearOfBirth;
+        this.dateOfBirth = dateOfBirth;
     }
 
     public int getId() {
@@ -52,12 +67,28 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public int getYearOfBirth() {
-        return yearOfBirth;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setYearOfBirth(int yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
+
+    public void addBook(Book book){
+        if (this.books == null)
+            this.books = new ArrayList<>();
+
+        this.books.add(book);
+        book.setReader(this);
     }
 
     @Override
@@ -65,11 +96,11 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return id == person.id && yearOfBirth == person.yearOfBirth && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName);
+        return id == person.id && dateOfBirth == person.dateOfBirth && Objects.equals(firstName, person.firstName) && Objects.equals(lastName, person.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstName, lastName, yearOfBirth);
+        return Objects.hash(id, firstName, lastName, dateOfBirth);
     }
 }

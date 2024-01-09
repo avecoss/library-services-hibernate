@@ -1,32 +1,51 @@
 package dev.alexcoss.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
+import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "book")
 public class Book {
     private static final int MIN_NAME = 2;
     private static final int MAX_NAME = 80;
     private static final int MIN_AUTHOR = 2;
     private static final int MAX_AUTHOR = 30;
 
+    @Id
+    @Column(name = "id")
     private int id;
-    private Integer personId;
     @NotEmpty(message = "Name should not be empty")
     @Size(min = MIN_NAME, max = MAX_NAME, message = "Name should be between 2 and 80 characters")
+    @Column(name = "name")
     private String name;
     @NotEmpty(message = "Author should not be empty")
     @Size(min = MIN_AUTHOR, max = MAX_AUTHOR, message = "Author should be between 2 and 30 characters")
+    @Column(name = "author")
     private String author;
     @Min(value = 0, message = "Year should be greater than or equal to 0")
+    @Column(name = "year_of_publishing")
     private Integer year;
 
-    public Book() {}
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person reader;
 
-    public Book(int id, String name, String author, Integer year) {
-        this.id = id;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "taken_at")
+    private Date takenAt;
+
+    @Transient
+    private boolean expired;
+
+    public Book() {
+    }
+
+    public Book(String name, String author, Integer year) {
         this.name = name;
         this.author = author;
         this.year = year;
@@ -38,14 +57,6 @@ public class Book {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Integer getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(Integer personId) {
-        this.personId = personId;
     }
 
     public String getName() {
@@ -70,6 +81,30 @@ public class Book {
 
     public void setYear(Integer year) {
         this.year = year;
+    }
+
+    public Person getReader() {
+        return reader;
+    }
+
+    public void setReader(Person reader) {
+        this.reader = reader;
+    }
+
+    public Date getTakenAt() {
+        return takenAt;
+    }
+
+    public void setTakenAt(Date takenAt) {
+        this.takenAt = takenAt;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
     }
 
     @Override
